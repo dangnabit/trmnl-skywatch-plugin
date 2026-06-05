@@ -8,7 +8,7 @@ on:
     branches: [ main ]
     paths:
       - '.github/workflows/update-plugin-stats.yml'
-      - 'scripts/update_plugin_stats.py'
+      - 'scripts/update_plugin_stats.sh'
 
 permissions:
   contents: write
@@ -21,16 +21,11 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
-      - name: Install dependencies
-        run: pip install requests pyyaml
+      - name: Install required tools
+        run: sudo apt-get update && sudo apt-get install -y jq file coreutils
 
       - name: Update README with plugin stats
-        run: python scripts/update_plugin_stats.py
+        run: bash scripts/update_plugin_stats.sh
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v7
